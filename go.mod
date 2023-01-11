@@ -3,9 +3,11 @@ module Whisper_Record
 go 1.18
 
 require (
+	github.com/jsummers/gobmp v0.0.0-20151104160322-e2ba15ffa76e
 	github.com/sirupsen/logrus v1.9.0
 	github.com/stretchr/testify v1.8.0
 	github.com/wailsapp/wails/v2 v2.3.1
+	golang.org/x/image v0.0.0-20201208152932-35266b937fa6
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/sqlite v1.4.4
 	gorm.io/gorm v1.24.3

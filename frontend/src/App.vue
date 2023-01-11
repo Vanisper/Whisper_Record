@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 
-</script>
+import WindowHeader from "./components/WindowHeader.vue";</script>
 
 <template>
-
+  <window-header></window-header>
 </template>
 
 <style>

@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"Whisper_Record/config"
+	"Whisper_Record/backend/config"
 	"Whisper_Record/util/encoding"
 	"Whisper_Record/util/json"
 	"bytes"

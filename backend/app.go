@@ -1,32 +1,37 @@
 package backend
 
 import (
+	"Whisper_Record/backend/config"
 	"Whisper_Record/backend/internal"
-	"Whisper_Record/config"
+	"Whisper_Record/util"
 	"Whisper_Record/util/file"
 	"context"
+	_ "embed"
 	"encoding/json"
 	"fmt"
+	"github.com/sirupsen/logrus"
+	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/menu"
 	"github.com/wailsapp/wails/v2/pkg/menu/keys"
+	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
-	"os/exec"
-
-	"Whisper_Record/util"
-	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 	"gorm.io/gorm"
+	"os/exec"
 )
 
 // App struct
 type App struct {
 	ctx     context.Context
+	init    *AppInit
 	Log     *logrus.Logger
 	Git     *internal.Git
 	DB      *gorm.DB
 	CfgFile string
 	LogFile string
 	DBFile  string
+	onTop   bool
+	hide    bool
 }
 
 // NewApp creates a new App application struct
@@ -36,13 +41,46 @@ func NewApp() *App {
 
 // OnStartup 应用启动
 func (a *App) OnStartup(ctx context.Context) {
-	a.ctx = ctx
-	cfgPath := util.GetCfgPath()
-	logPath := util.GetLogPath()
+	// 初始化
+	a.init = NewAppInit()
+	a.init.Init()
 	// 日志
-	a.LogFile = fmt.Sprintf(config.LogFile, logPath)
-	a.Log = internal.NewLogger(a.LogFile)
+	a.Log = a.init.Log
 	a.Log.Info("OnStartup begin")
+	// 获取上下文
+	a.ctx = ctx
+	a.onTop = config.OnTop
+	a.hide = config.Hide
+
+	cfgPath := util.GetCfgPath()
+	//创建系统托盘
+	trayOptions := options.SystemTray{
+		LightModeIcon: nil,
+		DarkModeIcon:  nil,
+		Title:         "微记",
+		Tooltip:       "微记",
+		StartHidden:   false,
+		Menu:          nil,
+		OnLeftClick: func() {
+			runtime.Show(a.ctx)
+		},
+		OnRightClick:       nil,
+		OnLeftDoubleClick:  nil,
+		OnRightDoubleClick: nil,
+		OnMenuClose:        nil,
+		OnMenuOpen:         nil,
+	}
+	tray := wails.Application.NewSystemTray(&trayOptions)
+	//托盘图标
+	tray.SetIcons(&options.SystemTrayIcon{Data: config.AppIcon}, &options.SystemTrayIcon{Data: config.AppIcon})
+	//托盘菜单
+	tray.SetMenu(a.Menu())
+	err := tray.Run()
+	if err != nil {
+		return
+	}
+
+	//-----------------
 	// Git
 	a.CfgFile = fmt.Sprintf(config.CfgFile, cfgPath)
 	a.Git = &internal.Git{}
@@ -66,9 +104,21 @@ func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
+// CloseWindow ...
+func (a *App) CloseWindow(isHide bool) {
+	a.hide = isHide
+	runtime.Quit(a.ctx)
+}
+
+func (a *App) OnTopWindow() {
+	a.onTop = !a.onTop
+	runtime.WindowSetAlwaysOnTop(a.ctx, a.onTop)
+}
+
 // Menu 应用菜单
 func (a *App) Menu() *menu.Menu {
 	return menu.NewMenuFromItems(
+		menu.Separator(),
 		menu.SubMenu(config.App, menu.NewMenuFromItems(
 			menu.Text("关于", nil, func(_ *menu.CallbackData) {
 				a.diag(config.Description)
@@ -91,13 +141,8 @@ func (a *App) Menu() *menu.Menu {
 					runtime.BrowserOpenURL(a.ctx, url)
 				}
 			}),
-			menu.Separator(),
-			menu.Text("退出", keys.CmdOrCtrl("Q"), func(_ *menu.CallbackData) {
-				runtime.Quit(a.ctx)
-			}),
 		)),
-		menu.EditMenu(),
-		menu.SubMenu("Help", menu.NewMenuFromItems(
+		menu.SubMenu("帮助", menu.NewMenuFromItems(
 			menu.Text(
 				"打开配置文件",
 				keys.Combo("C", keys.CmdOrCtrlKey, keys.ShiftKey),
@@ -137,6 +182,10 @@ func (a *App) Menu() *menu.Menu {
 				},
 			),
 		)),
+		menu.Separator(),
+		menu.Text("退出", keys.CmdOrCtrl("Q"), func(_ *menu.CallbackData) {
+			a.CloseWindow(false)
+		}),
 	)
 }
 
@@ -155,8 +204,13 @@ func (a *App) OnShutdown(ctx context.Context) {
 // OnBeforeClose ...
 func (a *App) OnBeforeClose(ctx context.Context) bool {
 	a.Log.Info("OnBeforeClose")
+
+	if a.hide {
+		runtime.Hide(a.ctx)
+	}
+
 	// 返回 true 将阻止程序关闭
-	return false
+	return a.hide
 }
 
 // ----------------------------------------------------------------
@@ -219,5 +273,6 @@ func (a *App) diag(message string, buttons ...string) (string, error) {
 		CancelButton:  config.BtnConfirmText,
 		DefaultButton: config.BtnConfirmText,
 		Buttons:       buttons,
+		Icon:          config.AppIcon, // 这个是个虚设, Wails 内部代码没有对这个图标作实现
 	})
 }

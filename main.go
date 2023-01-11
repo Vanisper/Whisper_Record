@@ -2,6 +2,7 @@ package main
 
 import (
 	"Whisper_Record/backend"
+	"Whisper_Record/backend/config"
 	"Whisper_Record/util"
 	"embed"
 	"github.com/wailsapp/wails/v2"
@@ -16,11 +17,6 @@ import (
 
 //go:embed all:frontend/dist
 var assets embed.FS
-
-// icon 会默认使用 build/appicon.png 转换为byte数组
-//
-//go:embed build/appicon.png
-var icon []byte
 
 type FileLoader struct {
 	http.Handler
@@ -63,15 +59,16 @@ func (h *FileLoader) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 
 func main() {
 	app := backend.NewApp()
+
 	err := wails.Run(&options.App{
-		Title:             "微记",  // 标题
-		Width:             1100,  // 启动宽度
-		Height:            768,   // 启动高度
-		MinWidth:          1100,  // 最小宽度
-		MinHeight:         768,   // 最小高度
-		HideWindowOnClose: false, // 关闭的时候隐藏窗口
-		StartHidden:       false, // 启动的时候隐藏窗口 （建议生产环境关闭此项，开发环境开启此项，原因自己体会）
-		AlwaysOnTop:       false, // 窗口固定在最顶层
+		Title: "微记", // 标题
+		//Width:             1100,  // 启动宽度
+		//Height:            768,   // 启动高度
+		MinWidth:          config.Width,  // 最小宽度
+		MinHeight:         config.Height, // 最小高度
+		HideWindowOnClose: false,         // 关闭的时候隐藏窗口
+		StartHidden:       false,         // 启动的时候隐藏窗口 （建议生产环境关闭此项，开发环境开启此项，原因自己体会）
+		AlwaysOnTop:       false,         // 窗口固定在最顶层
 		AssetServer: &assetserver.Options{
 			Assets:  assets,
 			Handler: NewFileLoader(),
@@ -84,10 +81,15 @@ func main() {
 		OnDomReady:    app.OnDomReady,    // 前端 dom 加载完成回调
 		OnBeforeClose: app.OnBeforeClose, // 关闭应用程序之前回调
 		OnShutdown:    app.OnShutdown,    // 程序退出回调
+		//Menu: app.Menu(),
+		//无边框
+		Frameless: true,
+		//指定html中的可拖动标签
+		CSSDragProperty: "--wails-draggable",
+		CSSDragValue:    "drag",
 		Bind: []interface{}{
 			app,
 		},
-		Menu: app.Menu(),
 		Mac: &mac.Options{
 			TitleBar: &mac.TitleBar{
 				TitlebarAppearsTransparent: true,
@@ -103,11 +105,10 @@ func main() {
 			About: &mac.AboutInfo{
 				Title:   "微记",
 				Message: "© 2022 Vangogh",
-				Icon:    icon,
+				Icon:    config.AppIcon,
 			},
 		},
 	})
-
 	if err != nil {
 		println("Error:", err.Error())
 	}

@@ -1,9 +1,19 @@
 package config
 
+import (
+	_ "embed"
+)
+
+//go:embed icon.png
+var AppIcon []byte
+
 // 应用
 const (
-	App     = "微记"
-	Version = "v0.1.0"
+	App         = "微记"
+	AssetsPath  = "assets/"
+	AppIconName = "icon"
+	AppIconPath = AssetsPath + AppIconName + ".ico"
+	Version     = "v0.1.0"
 )
 
 const (
@@ -19,6 +29,8 @@ const (
 const (
 	Width  = 1024
 	Height = 768
+	OnTop  = false
+	Hide   = false
 )
 
 // 文件配置
