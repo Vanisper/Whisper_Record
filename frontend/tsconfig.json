@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "useDefineForClassFields": true,
     "module": "ESNext",
     "moduleResolution": "Node",
     "strict": true,
@@ -11,16 +10,28 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "lib": [
+      "es6",
       "ESNext",
-      "DOM"
+      "dom"
     ],
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    //不允许使用any
+    "noImplicitAny": true,
+    // "strictNullChecks": true, //不允许使用null
+    //不允许往this上面挂属性
+    "noImplicitThis": true
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "types/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.js"
   ],
   "references": [
     {

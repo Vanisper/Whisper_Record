@@ -10,10 +10,18 @@ export function Greet(arg1) {
   return window['go']['backend']['App']['Greet'](arg1);
 }
 
+export function MaximiseWindow() {
+  return window['go']['backend']['App']['MaximiseWindow']();
+}
+
 export function Menu() {
   return window['go']['backend']['App']['Menu']();
 }
 
 export function OnTopWindow() {
   return window['go']['backend']['App']['OnTopWindow']();
+}
+
+export function WindowIsOnToped() {
+  return window['go']['backend']['App']['WindowIsOnToped']();
 }

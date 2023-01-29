@@ -77,7 +77,9 @@ func initAppIcon() (string, error) {
 			return "写出预设图标文件失败", err
 		}
 	} else {
+		println("1", fs)
 		fSrc, _ = io.ReadAll(fs)
+		println("2", fs)
 		fileType = file.GetFileType(fSrc)
 	}
 

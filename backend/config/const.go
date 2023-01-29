@@ -27,10 +27,11 @@ const (
 
 // 窗口尺寸
 const (
-	Width  = 1024
-	Height = 768
-	OnTop  = false
-	Hide   = false
+	Width    = 1024
+	Height   = 768
+	Maximise = false
+	OnTop    = false
+	Hide     = false
 )
 
 // 文件配置

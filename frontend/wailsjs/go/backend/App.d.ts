@@ -6,6 +6,10 @@ export function CloseWindow(arg1:boolean):Promise<void>;
 
 export function Greet(arg1:string):Promise<string>;
 
+export function MaximiseWindow():Promise<void>;
+
 export function Menu():Promise<menu.Menu>;
 
 export function OnTopWindow():Promise<void>;
+
+export function WindowIsOnToped():Promise<boolean>;

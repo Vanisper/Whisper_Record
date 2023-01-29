@@ -12,7 +12,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/menu"
-	"github.com/wailsapp/wails/v2/pkg/menu/keys"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"gopkg.in/yaml.v2"
@@ -22,16 +21,18 @@ import (
 
 // App struct
 type App struct {
-	ctx     context.Context
-	init    *AppInit
-	Log     *logrus.Logger
-	Git     *internal.Git
-	DB      *gorm.DB
-	CfgFile string
-	LogFile string
-	DBFile  string
-	onTop   bool
-	hide    bool
+	ctx         context.Context
+	init        *AppInit
+	Log         *logrus.Logger
+	Git         *internal.Git
+	DB          *gorm.DB
+	CfgFile     string
+	LogFile     string
+	DBFile      string
+	onTop       bool
+	isMaximised bool
+	//hide 是否启用关闭至托盘的模式
+	hide bool
 }
 
 // NewApp creates a new App application struct
@@ -50,6 +51,14 @@ func (a *App) OnStartup(ctx context.Context) {
 	// 获取上下文
 	a.ctx = ctx
 	a.onTop = config.OnTop
+
+	if a.onTop {
+		runtime.WindowSetAlwaysOnTop(a.ctx, a.onTop)
+	}
+	a.isMaximised = config.Maximise
+	if a.isMaximised {
+		runtime.WindowMaximise(a.ctx)
+	}
 	a.hide = config.Hide
 
 	cfgPath := util.GetCfgPath()
@@ -104,15 +113,31 @@ func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
-// CloseWindow ...
-func (a *App) CloseWindow(isHide bool) {
-	a.hide = isHide
-	runtime.Quit(a.ctx)
-}
-
+// OnTopWindow 置顶窗口
 func (a *App) OnTopWindow() {
 	a.onTop = !a.onTop
 	runtime.WindowSetAlwaysOnTop(a.ctx, a.onTop)
+}
+
+func (a *App) WindowIsOnToped() bool {
+	return a.onTop
+}
+
+// MaximiseWindow 最大化窗口
+func (a *App) MaximiseWindow() {
+	if runtime.WindowIsMaximised(a.ctx) {
+		runtime.WindowUnmaximise(a.ctx)
+	} else {
+		runtime.WindowMaximise(a.ctx)
+	}
+
+}
+
+// CloseWindow 关闭窗口,
+// isHide 传参用来标记是否: 不退出程序，仅隐藏桌面窗口
+func (a *App) CloseWindow(isHide bool) {
+	a.hide = isHide
+	runtime.Quit(a.ctx)
 }
 
 // Menu 应用菜单
@@ -121,7 +146,10 @@ func (a *App) Menu() *menu.Menu {
 		menu.Separator(),
 		menu.SubMenu(config.App, menu.NewMenuFromItems(
 			menu.Text("关于", nil, func(_ *menu.CallbackData) {
-				a.diag(config.Description)
+				_, err := a.diag(config.Description)
+				if err != nil {
+					return
+				}
 			}),
 			menu.Text("检查更新", nil, func(_ *menu.CallbackData) {
 				lastVersion := a.Git.GetLastVersion()
@@ -145,7 +173,7 @@ func (a *App) Menu() *menu.Menu {
 		menu.SubMenu("帮助", menu.NewMenuFromItems(
 			menu.Text(
 				"打开配置文件",
-				keys.Combo("C", keys.CmdOrCtrlKey, keys.ShiftKey),
+				nil,
 				func(_ *menu.CallbackData) {
 					if !file.IsExist(a.CfgFile) {
 						a.diag("文件不存在, 请先更新配置")
@@ -160,7 +188,7 @@ func (a *App) Menu() *menu.Menu {
 			),
 			menu.Text(
 				"打开日志文件",
-				keys.Combo("L", keys.CmdOrCtrlKey, keys.ShiftKey),
+				nil,
 				func(_ *menu.CallbackData) {
 					if !file.IsExist(a.LogFile) {
 						a.diag("文件不存在, 请先更新配置")
@@ -176,14 +204,19 @@ func (a *App) Menu() *menu.Menu {
 			menu.Separator(),
 			menu.Text(
 				"打开应用主页",
-				keys.Combo("H", keys.CmdOrCtrlKey, keys.ShiftKey),
+				nil,
 				func(_ *menu.CallbackData) {
 					runtime.BrowserOpenURL(a.ctx, config.GitRepoURL)
 				},
 			),
+			menu.Separator(),
+			menu.Text("修复窗口位置异常", nil, func(_ *menu.CallbackData) {
+				runtime.WindowCenter(a.ctx)
+				runtime.Show(a.ctx)
+			}),
 		)),
 		menu.Separator(),
-		menu.Text("退出", keys.CmdOrCtrl("Q"), func(_ *menu.CallbackData) {
+		menu.Text("退出", nil, func(_ *menu.CallbackData) {
 			a.CloseWindow(false)
 		}),
 	)

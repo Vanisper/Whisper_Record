@@ -6,13 +6,13 @@ import (
 	"strconv"
 )
 
-type js struct {
+type Js struct {
 	value interface{}
 }
 
 // New ...
-func New(s string) *js {
-	j := new(js)
+func New(s string) *Js {
+	j := new(Js)
 	var v interface{}
 	if err := json.Unmarshal([]byte(s), &v); err != nil {
 		return j
@@ -22,7 +22,7 @@ func New(s string) *js {
 }
 
 // Key ...
-func (j *js) Key(key string) *js {
+func (j *Js) Key(key string) *Js {
 	m, ok := (j.value).(map[string]interface{})
 	if !ok {
 		j.value = nil
@@ -37,7 +37,7 @@ func (j *js) Key(key string) *js {
 }
 
 // Index ...
-func (j *js) Index(index int) *js {
+func (j *Js) Index(index int) *Js {
 	l, ok := (j.value).([]interface{})
 	if !ok {
 		j.value = nil
@@ -54,12 +54,12 @@ func (j *js) Index(index int) *js {
 }
 
 // Value ...
-func (j *js) Value() interface{} {
+func (j *Js) Value() interface{} {
 	return j.value
 }
 
 // ToString ...
-func (j *js) ToString() string {
+func (j *Js) ToString() string {
 	if j.value == nil {
 		return ""
 	}
@@ -67,7 +67,7 @@ func (j *js) ToString() string {
 }
 
 // ToUint ...
-func (j *js) ToUint() uint64 {
+func (j *Js) ToUint() uint64 {
 	v, err := strconv.ParseUint(j.ToString(), 10, 64)
 	if err != nil {
 		return 0
@@ -76,7 +76,7 @@ func (j *js) ToUint() uint64 {
 }
 
 // ToJSON ...
-func (j *js) ToJSON() string {
+func (j *Js) ToJSON() string {
 	if j.value == nil {
 		return ""
 	}
@@ -85,7 +85,7 @@ func (j *js) ToJSON() string {
 }
 
 // ToArray ...
-func (j *js) ToArray() interface{} {
+func (j *Js) ToArray() interface{} {
 	switch (j.value).(type) {
 	case []interface{}:
 		return (j.value).([]interface{})

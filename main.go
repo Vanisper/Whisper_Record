@@ -73,9 +73,9 @@ func main() {
 			Assets:  assets,
 			Handler: NewFileLoader(),
 		},
-		BackgroundColour: &options.RGBA{
-			R: 27, G: 38, B: 54, A: 1,
-		},
+		//BackgroundColour: &options.RGBA{
+		//	R: 27, G: 38, B: 54, A: 1,
+		//},
 		LogLevel:      logger.DEBUG,      // 日志级别
 		OnStartup:     app.OnStartup,     // 程序启动回调
 		OnDomReady:    app.OnDomReady,    // 前端 dom 加载完成回调
