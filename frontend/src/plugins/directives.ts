@@ -1,6 +1,8 @@
-import { App } from 'vue';
-import VueLazyLoad from 'vue3-lazyload'
-import { requireErrorImg } from '../utils'
+import { App } from "vue";
+import VueLazyLoad from "vue3-lazyload";
+import { requireErrorImg } from "../utils";
+
+import Contextmenu from "../packages/contextmenu";
 
 // import { x } from '@/directives';
 
@@ -9,9 +11,11 @@ import { requireErrorImg } from '../utils'
  * @param app
  */
 export function setupDirectives(app: App) {
-    // 图片懒加载
-    app.use(VueLazyLoad, {
-        error: requireErrorImg(),
-    })
-    // app.directive('x', x);
+  // 图片懒加载
+  app.use(VueLazyLoad, {
+    error: requireErrorImg(),
+  });
+  // app.directive('x', x);
+  // 右击菜单
+  app.use(Contextmenu);
 }

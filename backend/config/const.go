@@ -27,8 +27,8 @@ const (
 
 // 窗口尺寸
 const (
-	Width    = 1024
-	Height   = 768
+	Width    = 875 / 1.25
+	Height   = 625 / 1.25
 	Maximise = false
 	OnTop    = false
 	Hide     = false

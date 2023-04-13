@@ -6,6 +6,8 @@ import router, {setupRouter} from "./route";
 import {setHtmlTheme} from "./utils";
 import {setupStore} from "./store";
 
+import "./theme.less"
+
 async function appInit() {
     const appProvider = createApp(AppProvider)
     const app = createApp(App)

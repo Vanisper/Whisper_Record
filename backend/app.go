@@ -10,9 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/menu"
-	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"gopkg.in/yaml.v2"
 	"gorm.io/gorm"
@@ -42,6 +40,9 @@ func NewApp() *App {
 
 // OnStartup 应用启动
 func (a *App) OnStartup(ctx context.Context) {
+	//透明背景会存在最大化无法点击顶部状态栏的问题
+	//hwnd := win.FindWindow(nil, syscall.StringToUTF16Ptr("微记"))
+	//win.SetWindowLong(hwnd, win.GWL_EXSTYLE, win.GetWindowLong(hwnd, win.GWL_EXSTYLE)|win.WS_EX_LAYERED)
 	// 初始化
 	a.init = NewAppInit()
 	a.init.Init()
@@ -62,32 +63,32 @@ func (a *App) OnStartup(ctx context.Context) {
 	a.hide = config.Hide
 
 	cfgPath := util.GetCfgPath()
-	//创建系统托盘
-	trayOptions := options.SystemTray{
-		LightModeIcon: nil,
-		DarkModeIcon:  nil,
-		Title:         "微记",
-		Tooltip:       "微记",
-		StartHidden:   false,
-		Menu:          nil,
-		OnLeftClick: func() {
-			runtime.Show(a.ctx)
-		},
-		OnRightClick:       nil,
-		OnLeftDoubleClick:  nil,
-		OnRightDoubleClick: nil,
-		OnMenuClose:        nil,
-		OnMenuOpen:         nil,
-	}
-	tray := wails.Application.NewSystemTray(&trayOptions)
-	//托盘图标
-	tray.SetIcons(&options.SystemTrayIcon{Data: config.AppIcon}, &options.SystemTrayIcon{Data: config.AppIcon})
-	//托盘菜单
-	tray.SetMenu(a.Menu())
-	err := tray.Run()
-	if err != nil {
-		return
-	}
+	////创建系统托盘
+	//trayOptions := options.SystemTray{
+	//	LightModeIcon: nil,
+	//	DarkModeIcon:  nil,
+	//	Title:         "微记",
+	//	Tooltip:       "微记",
+	//	StartHidden:   false,
+	//	Menu:          nil,
+	//	OnLeftClick: func() {
+	//		runtime.Show(a.ctx)
+	//	},
+	//	OnRightClick:       nil,
+	//	OnLeftDoubleClick:  nil,
+	//	OnRightDoubleClick: nil,
+	//	OnMenuClose:        nil,
+	//	OnMenuOpen:         nil,
+	//}
+	//tray := wails.Application.NewSystemTray(&trayOptions)
+	////托盘图标
+	//tray.SetIcons(&options.SystemTrayIcon{Data: config.AppIcon}, &options.SystemTrayIcon{Data: config.AppIcon})
+	////托盘菜单
+	//tray.SetMenu(a.Menu())
+	//err := tray.Run()
+	//if err != nil {
+	//	return
+	//}
 
 	//-----------------
 	// Git

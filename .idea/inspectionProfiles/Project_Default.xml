@@ -1,6 +1,57 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <inspection_tool class="CssUnknownProperty" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myCustomPropertiesEnabled" value="true" />
+      <option name="myIgnoreVendorSpecificProperties" value="false" />
+      <option name="myCustomPropertiesList">
+        <value>
+          <list size="36">
+            <item index="0" class="java.lang.String" itemvalue="light" />
+            <item index="1" class="java.lang.String" itemvalue="scrollbar-bg" />
+            <item index="2" class="java.lang.String" itemvalue="dark" />
+            <item index="3" class="java.lang.String" itemvalue="text-primary" />
+            <item index="4" class="java.lang.String" itemvalue="text-secondary" />
+            <item index="5" class="java.lang.String" itemvalue="text-inactive" />
+            <item index="6" class="java.lang.String" itemvalue="text-link" />
+            <item index="7" class="java.lang.String" itemvalue="text-invert" />
+            <item index="8" class="java.lang.String" itemvalue="text-primary-red" />
+            <item index="9" class="java.lang.String" itemvalue="text-primary-green" />
+            <item index="10" class="java.lang.String" itemvalue="text-primary-yellow" />
+            <item index="11" class="java.lang.String" itemvalue="text-primary-blue" />
+            <item index="12" class="java.lang.String" itemvalue="background-primary" />
+            <item index="13" class="java.lang.String" itemvalue="background-secondary" />
+            <item index="14" class="java.lang.String" itemvalue="background-tertiary" />
+            <item index="15" class="java.lang.String" itemvalue="background-toc-active" />
+            <item index="16" class="java.lang.String" itemvalue="border-primary" />
+            <item index="17" class="java.lang.String" itemvalue="border-secondary" />
+            <item index="18" class="java.lang.String" itemvalue="button-primary-default" />
+            <item index="19" class="java.lang.String" itemvalue="button-primary-hover" />
+            <item index="20" class="java.lang.String" itemvalue="button-primary-active" />
+            <item index="21" class="java.lang.String" itemvalue="button-primary-inactive" />
+            <item index="22" class="java.lang.String" itemvalue="button-secondary-default" />
+            <item index="23" class="java.lang.String" itemvalue="button-secondary-hover" />
+            <item index="24" class="java.lang.String" itemvalue="button-secondary-active" />
+            <item index="25" class="java.lang.String" itemvalue="button-secondary-border-focus" />
+            <item index="26" class="java.lang.String" itemvalue="button-secondary-inactive" />
+            <item index="27" class="java.lang.String" itemvalue="button-secondary-border-red" />
+            <item index="28" class="java.lang.String" itemvalue="button-secondary-border-red-focus" />
+            <item index="29" class="java.lang.String" itemvalue="icon-primary" />
+            <item index="30" class="java.lang.String" itemvalue="icon-secondary" />
+            <item index="31" class="java.lang.String" itemvalue="icon-information" />
+            <item index="32" class="java.lang.String" itemvalue="icon-warning" />
+            <item index="33" class="java.lang.String" itemvalue="icon-critical" />
+            <item index="34" class="java.lang.String" itemvalue="icon-success" />
+            <item index="35" class="java.lang.String" itemvalue="button-hover" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <Languages>
+        <language minSize="35" name="Style Sheets" />
+      </Languages>
+    </inspection_tool>
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>

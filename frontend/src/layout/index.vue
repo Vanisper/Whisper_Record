@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import {LayoutMain} from './components/LayoutMain/index'</script>
+import { LayoutMain } from './components/LayoutMain/index';
+</script>
 
 <template>
   <layout-main></layout-main>

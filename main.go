@@ -5,14 +5,17 @@ import (
 	"Whisper_Record/backend/config"
 	"Whisper_Record/util"
 	"embed"
+	"log"
+	"net/http"
+	"strings"
+
+	"github.com/wailsapp/wails/v2/pkg/options/windows"
+
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
-	"log"
-	"net/http"
-	"strings"
 )
 
 //go:embed all:frontend/dist
@@ -61,9 +64,9 @@ func main() {
 	app := backend.NewApp()
 
 	err := wails.Run(&options.App{
-		Title: "微记", // 标题
-		//Width:             1100,  // 启动宽度
-		//Height:            768,   // 启动高度
+		Title:             "微记",          // 标题
+		Width:             config.Width,  // 启动宽度
+		Height:            config.Height, // 启动高度
 		MinWidth:          config.Width,  // 最小宽度
 		MinHeight:         config.Height, // 最小高度
 		HideWindowOnClose: false,         // 关闭的时候隐藏窗口
@@ -73,14 +76,12 @@ func main() {
 			Assets:  assets,
 			Handler: NewFileLoader(),
 		},
-		//BackgroundColour: &options.RGBA{
-		//	R: 27, G: 38, B: 54, A: 1,
-		//},
-		LogLevel:      logger.DEBUG,      // 日志级别
-		OnStartup:     app.OnStartup,     // 程序启动回调
-		OnDomReady:    app.OnDomReady,    // 前端 dom 加载完成回调
-		OnBeforeClose: app.OnBeforeClose, // 关闭应用程序之前回调
-		OnShutdown:    app.OnShutdown,    // 程序退出回调
+		BackgroundColour: options.NewRGBA(255, 255, 255, 0),
+		LogLevel:         logger.DEBUG,      // 日志级别
+		OnStartup:        app.OnStartup,     // 程序启动回调
+		OnDomReady:       app.OnDomReady,    // 前端 dom 加载完成回调
+		OnBeforeClose:    app.OnBeforeClose, // 关闭应用程序之前回调
+		OnShutdown:       app.OnShutdown,    // 程序退出回调
 		//Menu: app.Menu(),
 		//无边框
 		Frameless: true,
@@ -89,6 +90,10 @@ func main() {
 		CSSDragValue:    "drag",
 		Bind: []interface{}{
 			app,
+		},
+		Windows: &windows.Options{
+			WebviewIsTransparent: true,
+			WindowIsTranslucent:  true,
 		},
 		Mac: &mac.Options{
 			TitleBar: &mac.TitleBar{

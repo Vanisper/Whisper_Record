@@ -9,11 +9,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "lib": [
-      "es6",
-      "ESNext",
-      "dom"
+    "types": [
+      // 一定要声明
+      "vite-svg-loader"
     ],
+    "lib": ["es6", "ESNext", "dom"],
     "skipLibCheck": true,
     //不允许使用any
     "noImplicitAny": true,
@@ -28,11 +28,7 @@
     "src/**/*.vue",
     "types/**/*"
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.js"
-  ],
+  "exclude": ["node_modules", "dist", "**/*.js"],
   "references": [
     {
       "path": "./tsconfig.node.json"
