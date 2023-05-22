@@ -12,7 +12,7 @@ const homeRouters: RouteRecordRaw = {
   //   redirect: PageEnum.BASE_HOME_ITEMS,
   meta: {
     title: "主页",
-    isRoot: true,
+    keepAlive: true,
   },
   children: [],
 };

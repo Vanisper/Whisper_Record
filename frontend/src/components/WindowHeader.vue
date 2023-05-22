@@ -1,5 +1,5 @@
 <template>
-  <header id="header" style="--wails-draggable:drag">
+  <header id="header" style="--wails-draggable: drag">
     <div class="header-wrapper">
       <div class="header-left" @dblclick="maximiseWindow">
         <slot name="extend-left" />
@@ -8,7 +8,7 @@
         <slot name="extend-center" />
       </div>
 
-      <div class="header-right" style="--wails-draggable:none">
+      <div class="header-right" style="--wails-draggable: none">
         <slot name="extend-right" />
         <window-controls />
         <!-- <old-window-controls /> -->
@@ -21,23 +21,23 @@
 import { MaximiseWindow } from "../../wailsjs/go/backend/App";
 import { onMounted, ref } from "vue";
 import { WindowIsMaximised } from "../../wailsjs/runtime";
-import WindowControls from "./WindowControls/index.vue"
-import OldWindowControls from "./WindowControls/old.vue"
+import WindowControls from "./WindowControls/index.vue";
+import OldWindowControls from "./WindowControls/old.vue";
 
 async function maximiseWindow() {
-  await MaximiseWindow()
-  isMaximised.value = !isMaximised.value
+  await MaximiseWindow();
+  isMaximised.value = !isMaximised.value;
 }
 
-let isMaximised = ref(await WindowIsMaximised())
+let isMaximised = ref(await WindowIsMaximised());
 
 window.onresize = async (event) => {
-  isMaximised.value = await WindowIsMaximised()
-}
+  isMaximised.value = await WindowIsMaximised();
+};
 
 onMounted(() => {
   // (window as any).wails.flags.deferDragToMouseMove = true;
-})
+});
 </script>
 
 <style scoped lang="less">

@@ -6,7 +6,7 @@ require (
 	github.com/jsummers/gobmp v0.0.0-20151104160322-e2ba15ffa76e
 	github.com/sirupsen/logrus v1.9.0
 	github.com/stretchr/testify v1.8.0
-	github.com/wailsapp/wails/v2 v2.4.0
+	github.com/wailsapp/wails/v2 v2.4.1
 	golang.org/x/image v0.5.0
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/sqlite v1.4.4

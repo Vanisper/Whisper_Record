@@ -11,7 +11,8 @@
     {
       "label": "Wails Build",
       "type": "shell",
-      "command": "wails build"
+      "command": "wails build",
+      "problemMatcher": []
     }
   ]
 }

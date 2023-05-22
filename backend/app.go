@@ -3,32 +3,41 @@ package backend
 import (
 	"Whisper_Record/backend/config"
 	"Whisper_Record/backend/internal"
+	"Whisper_Record/backend/server"
 	"Whisper_Record/util"
 	"Whisper_Record/util/file"
 	"context"
 	_ "embed"
 	"encoding/json"
 	"fmt"
+	"log"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"sort"
+
 	"github.com/sirupsen/logrus"
 	"github.com/wailsapp/wails/v2/pkg/menu"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"gopkg.in/yaml.v2"
 	"gorm.io/gorm"
-	"os/exec"
 )
 
 // App struct
 type App struct {
-	ctx         context.Context
-	init        *AppInit
-	Log         *logrus.Logger
-	Git         *internal.Git
-	DB          *gorm.DB
-	CfgFile     string
-	LogFile     string
-	DBFile      string
-	onTop       bool
-	isMaximised bool
+	ctx           context.Context
+	init          *AppInit
+	Log           *logrus.Logger
+	Git           *internal.Git
+	DB            *gorm.DB
+	ServerPreview *server.Preview
+	ServerPosts   *server.Posts
+	PostsPath     string
+	CfgFile       string
+	LogFile       string
+	DBFile        string
+	onTop         bool
+	isMaximised   bool
 	//hide 是否启用关闭至托盘的模式
 	hide bool
 }
@@ -46,6 +55,13 @@ func (a *App) OnStartup(ctx context.Context) {
 	// 初始化
 	a.init = NewAppInit()
 	a.init.Init()
+	// 初始化博客文件夹
+	a.ServerPosts = server.NewPosts()
+	a.ServerPosts.Init()
+	a.PostsPath = a.ServerPosts.Path
+	// 初始化markdown-blog
+	a.ServerPreview = server.NewPreview()
+	a.ServerPreview.Init()
 	// 日志
 	a.Log = a.init.Log
 	a.Log.Info("OnStartup begin")
@@ -131,14 +147,169 @@ func (a *App) MaximiseWindow() {
 	} else {
 		runtime.WindowMaximise(a.ctx)
 	}
-
 }
 
+/**
+goBindingsDir := filepath.Join(wailsjsbasedir, "go")
+	err = os.RemoveAll(goBindingsDir)
+	if err != nil {
+		return err
+	}
+	_ = fs.MkDirs(goBindingsDir)
+
+	err = bindings.GenerateGoBindings(goBindingsDir)
+	if err != nil {
+		return err
+	}
+*/
 // CloseWindow 关闭窗口,
 // isHide 传参用来标记是否: 不退出程序，仅隐藏桌面窗口
 func (a *App) CloseWindow(isHide bool) {
 	a.hide = isHide
 	runtime.Quit(a.ctx)
+}
+
+// 关闭预览进程
+func (a *App) KillPreview() {
+	a.ServerPreview.Kill()
+	log.Println("Kill ServerPreview")
+}
+
+// 重启预览进程
+func (a *App) ReStartPreview() {
+	a.ServerPreview.ReStart()
+	log.Println("ReStart ServerPreview")
+	a.OpenPreviewURL()
+}
+
+// 打开预览网页
+func (a *App) OpenPreviewURL() {
+	url := "http://127.0.0.1:" + (a.ServerPreview.Port)
+	runtime.BrowserOpenURL(a.ctx, url)
+	log.Println("Server Run In:", url)
+}
+
+type FileInfo struct {
+	Id          string      `json:"id"`
+	Name        string      `json:"name"`
+	Pathname    string      `json:"pathname"`
+	BirthTime   interface{} `json:"birthTime"`
+	IsFile      bool        `json:"isFile"`
+	IsDirectory bool        `json:"isDirectory"`
+	IsMarkdown  bool        `json:"isMarkdown"`
+}
+
+type FilesTree struct {
+	Id          string       `json:"id"`
+	Name        string       `json:"name"`
+	Pathname    string       `json:"pathname"`
+	IsFile      bool         `json:"isFile"`
+	IsDirectory bool         `json:"isDirectory"`
+	IsMarkdown  bool         `json:"isMarkdown"`
+	IsCollapsed bool         `json:"isCollapsed"`
+	Files       []*FileInfo  `json:"files"`
+	Folders     []*FilesTree `json:"folders"`
+}
+
+func getFilesTree(directory string) (*FilesTree, error) {
+	filesTree := &FilesTree{
+		Id:          filepath.Base(directory),
+		Name:        filepath.Base(directory),
+		Pathname:    directory,
+		IsDirectory: true,
+		IsFile:      false,
+		IsMarkdown:  false,
+		IsCollapsed: false,
+	}
+
+	files, err := os.ReadDir(directory)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, file := range files {
+		filePathname := filepath.Join(directory, file.Name())
+
+		if file.IsDir() {
+			folder, err := getFilesTree(filePathname)
+			if err != nil {
+				return nil, err
+			}
+			filesTree.Folders = append(filesTree.Folders, folder)
+		} else {
+			fileExtname := filepath.Ext(file.Name())
+			_fileInfo, _ := file.Info()
+			fileInfo := &FileInfo{
+				Id:          _fileInfo.Name(),
+				Name:        _fileInfo.Name()[0 : len(_fileInfo.Name())-len(fileExtname)],
+				Pathname:    filePathname,
+				BirthTime:   _fileInfo.ModTime(),
+				IsFile:      true,
+				IsDirectory: false,
+				IsMarkdown:  fileExtname == ".md",
+			}
+			filesTree.Files = append(filesTree.Files, fileInfo)
+		}
+	}
+
+	sort.Slice(filesTree.Files, func(i, j int) bool {
+		f1IsDir, f2IsDir := filesTree.Files[i].IsDirectory, filesTree.Files[j].IsDirectory
+		if f1IsDir != f2IsDir {
+			return !f1IsDir
+		}
+
+		return filesTree.Files[i].Name < filesTree.Files[j].Name
+	})
+
+	sort.Slice(filesTree.Folders, func(i, j int) bool {
+		return filesTree.Folders[i].Name < filesTree.Folders[j].Name
+	})
+
+	return filesTree, nil
+}
+
+// 获取文章的文件列表
+func (a *App) GetPostsList() string {
+	fmt.Printf("a.PostsPath: %v\n", a.PostsPath)
+	list, err := getFilesTree(a.PostsPath)
+	if err != nil {
+		panic(err)
+	}
+	list_json, _ := json.Marshal(list)
+	a.Log.Info("获取文章的文件列表:", string(list_json))
+	return string(list_json)
+}
+
+// 获取文章的文件内容
+func (a *App) GetPostsContent(path string) string {
+	content, err := os.ReadFile(path)
+	if err != nil {
+		return ""
+	}
+	return string(content)
+}
+
+// 写入内容至文件
+func (a *App) WritePostsContent(path string, content string) bool {
+	err := os.WriteFile(path, []byte(content), 0644)
+	return err == nil
+}
+
+// 添加文件
+func (a *App) AddFile(path string) bool {
+	err := os.WriteFile(path, []byte(""), 0644)
+	return err == nil
+}
+
+// 添加文件夹
+func (a *App) AddFolder(path string) string {
+	return util.MkDir(path)
+}
+
+// 删除文件/夹
+func (a *App) RemoveFile(path string) bool {
+	err := os.RemoveAll(path)
+	return err == nil
 }
 
 // Menu 应用菜单
@@ -241,6 +412,8 @@ func (a *App) OnBeforeClose(ctx context.Context) bool {
 
 	if a.hide {
 		runtime.Hide(a.ctx)
+	} else {
+		a.KillPreview()
 	}
 
 	// 返回 true 将阻止程序关闭

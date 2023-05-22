@@ -109,7 +109,7 @@ func main() {
 			WindowIsTranslucent:  false,
 			About: &mac.AboutInfo{
 				Title:   "微记",
-				Message: "© 2022 Vangogh",
+				Message: "© 2023 Vangogh",
 				Icon:    config.AppIcon,
 			},
 		},

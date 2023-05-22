@@ -7,6 +7,7 @@ import { PageEnum } from "../enums/pageEnum";
 import {
   EditorRoute,
   HttpErrorPage,
+  SettingRoute,
   LoginRoute,
   RedirectRoute,
   ReloadRoute,
@@ -17,22 +18,17 @@ const RootRoute: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Root",
-    redirect: PageEnum.BASE_HOME,
+    redirect: PageEnum.BASE_EDITOR,
     component: Layout,
     meta: {
       title: "Root",
+      keepAlive: true,
     },
-    children: [...HttpErrorPage, modules.homeRouters],
+    children: [...HttpErrorPage, modules.homeRouters, EditorRoute],
   },
 ];
 
-export const constantRouter: any[] = [
-  EditorRoute,
-  LoginRoute,
-  ...RootRoute,
-  RedirectRoute,
-  ReloadRoute,
-];
+export const constantRouter: any[] = [...RootRoute, SettingRoute, LoginRoute, RedirectRoute, ReloadRoute];
 
 const router = createRouter({
   history: createWebHashHistory(),

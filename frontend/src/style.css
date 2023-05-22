@@ -3,11 +3,12 @@
   margin: 0;
   box-sizing: border-box;
 }
-#app {
+#app,
+body {
   height: 100vh;
+  width: 100vw;
+  overflow: hidden;
 }
-
-
 /* Vue加载前loading */
 .first-loading-wrp {
   display: flex;

@@ -1,0 +1,32 @@
+@import url("./vars.less");
+@font-face {
+  font-family: "Editor Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: url(../icons/material-icons-outline.woff2) format("woff2");
+}
+.editor {
+  ::selection {
+    background: rgba(0, 153, 255, 0.3);
+  }
+  position: relative;
+  color: rgba(@color, 0.8);
+  font-family: @font-family;
+  line-height: @line-height;
+  word-break: break-word;
+  padding: 0;
+}
+@import url("./article.less");
+@import url("./tool.less");
+
+// 去除可编辑框的编辑光环
+// [contenteditable] {
+//   outline: none;
+// }
+
+// .md-p {
+//   margin-bottom: 1.5rem;
+//   &:empty:after {
+//     content: "\200B";
+//   }
+// }

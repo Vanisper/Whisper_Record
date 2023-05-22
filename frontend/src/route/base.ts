@@ -11,8 +11,19 @@ export const EditorRoute: RouteRecordRaw = {
   component: () => import("../views/editor/index.vue"),
   meta: {
     title: "编辑器",
+    keepAlive: true,
   },
 };
+
+export const SettingRoute: RouteRecordRaw = {
+  path: PageEnum.BASE_SETTING,
+  name: PageEnum.BASE_SETTING_NAME,
+  component: () => import("../views/setting/index.vue"),
+  meta: {
+    title: "设置",
+    keepAlive: true,
+  },
+}
 
 export const LoginRoute: RouteRecordRaw = {
   path: "/login",

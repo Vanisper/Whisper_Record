@@ -1,0 +1,38 @@
+.menubar-wrapper {
+  position: relative;
+  .menubar {
+    background-color: var(--bg);
+    display: flex;
+    height: 3.25rem;
+    padding: 0 1rem;
+    align-items: center;
+    justify-content: space-between;
+
+    .menuitem-wrapper {
+      display: flex;
+      flex-shrink: 0;
+      flex-grow: 0;
+      .menuitem {
+        height: 2rem;
+        width: 2rem;
+        cursor: pointer;
+        border-radius: 0.25rem;
+        padding: 0.25rem;
+      }
+    }
+  }
+}
+
+.dark {
+  .menubar {
+    background-color: var(--bg-dark);
+  }
+  .menuicon {
+    &.menuitem > svg {
+      fill: #fff;
+    }
+    &.SourceCode.menuitem > svg > path:nth-child(1) {
+      fill: #fff;
+    }
+  }
+}

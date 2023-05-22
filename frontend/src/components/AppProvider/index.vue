@@ -1,5 +1,5 @@
 <template>
-  <n-loading-bar-provider :to="loadingBarTargetRef" container-style="position: absolute;">
+  <n-loading-bar-provider :to="loadingBarTargetRef as HTMLElement" container-style="position: absolute;">
 
     <n-dialog-provider>
       <dialog-content></dialog-content>
@@ -29,5 +29,5 @@ import { MessageContent } from '../Plugins/MessageContent/index';
 import { DialogContent } from '../Plugins/DialogContent/index';
 import { LoadingContent } from '../Plugins/LoadingContent/index';
 import { ref } from 'vue';
-const loadingBarTargetRef = ref<undefined | HTMLElement>(undefined)
+const loadingBarTargetRef = ref<string | false | HTMLElement>(false)
 </script>

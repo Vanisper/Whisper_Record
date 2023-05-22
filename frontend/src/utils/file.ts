@@ -1,3 +1,5 @@
+import path from "path"
+import fs from "fs"
 /**
  * *获取上传的文件数据
  * @param { File } file 文件对象
@@ -52,4 +54,32 @@ export const downloadTextFile = (
     // 字符内容转变成blob地址
     const blob = new Blob([content])
     downloadByA(URL.createObjectURL(blob), filename, fileSuffix)
+}
+
+
+/**
+ * Check if the both paths point to the same file.
+ *
+ * @param {string} pathA The first path.
+ * @param {string} pathB The second path.
+ * @param {boolean} [isNormalized] Are both paths already normalized.
+ */
+export const isSamePathSync = (pathA: string, pathB: string, isNormalized: boolean = false) => {
+    if (!pathA || !pathB) return false
+    const a = isNormalized ? pathA : path.normalize(pathA)
+    const b = isNormalized ? pathB : path.normalize(pathB)
+    if (a.length !== b.length) {
+        return false
+    } else if (a === b) {
+        return true
+    } else if (a.toLowerCase() === b.toLowerCase()) {
+        try {
+            const fiA = fs.statSync(a)
+            const fiB = fs.statSync(b)
+            return fiA.ino === fiB.ino
+        } catch (_) {
+            // Ignore error
+        }
+    }
+    return false
 }

@@ -1,0 +1,23 @@
+title: "Vanisper's Blog"
+dir: "./posts"
+port: 5006
+env: dev
+cache: 3
+
+gitalk:
+  client-id: "232405dbc186b9d69c38"
+  client-secret: "3812ffa67347fad8347cdab7941d1df0aa39107b"
+  repo: "markdown-blog-issue"
+  owner: "Vanisper"
+  admin:
+    - "Vanisper"
+  labels:
+    - "gitalk"
+
+analyzer-baidu: "Your Baidu analyzer code"
+analyzer-google: "Your Google analyzer code"
+
+ignore-file:
+  - "demo.md"
+ignore-path:
+  - "demo"

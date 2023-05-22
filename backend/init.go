@@ -7,14 +7,15 @@ import (
 	"Whisper_Record/util/file"
 	"Whisper_Record/util/image/ico"
 	"fmt"
-	"github.com/sirupsen/logrus"
-	"golang.org/x/image/bmp"
 	"image/gif"
 	"image/jpeg"
 	"image/png"
 	"io"
 	"os"
 	"path/filepath"
+
+	"github.com/sirupsen/logrus"
+	"golang.org/x/image/bmp"
 )
 
 type AppInit struct {
@@ -33,6 +34,11 @@ func (init *AppInit) Init() {
 	init.LogFile = fmt.Sprintf(config.LogFile, util.MkDir(util.GetLogPath()))
 	init.Log = internal.NewLogger(init.LogFile)
 	init.Log.Info("Init begin")
+	// 初始化运行目录
+	err := os.Chdir(util.GetCurrPath())
+	if err != nil {
+		init.Log.Errorf("Init Cmd Run Dir err: %v", err)
+	}
 	//初始化软件图标
 	message, err := initAppIcon()
 	if err != nil {
@@ -51,7 +57,6 @@ func (init *AppInit) Init() {
 		init.Log.Errorf("Init DB err: %v", err)
 	}
 	init.Log.Infof("Init DB: %+v", message)
-
 	// Init End
 	init.Log.Info("Init end")
 }

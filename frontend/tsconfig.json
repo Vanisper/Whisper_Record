@@ -5,6 +5,7 @@
     "moduleResolution": "Node",
     "strict": true,
     "jsx": "preserve",
+    "allowJs": false,
     "sourceMap": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -13,7 +14,11 @@
       // 一定要声明
       "vite-svg-loader"
     ],
-    "lib": ["es6", "ESNext", "dom"],
+    "lib": [
+      "es6",
+      "ESNext",
+      "dom"
+    ],
     "skipLibCheck": true,
     //不允许使用any
     "noImplicitAny": true,
@@ -28,7 +33,12 @@
     "src/**/*.vue",
     "types/**/*"
   ],
-  "exclude": ["node_modules", "dist", "**/*.js"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.js",
+    "src/assets/icons/fileIcons/@marktext/file-icons/build/index.js"
+  ],
   "references": [
     {
       "path": "./tsconfig.node.json"

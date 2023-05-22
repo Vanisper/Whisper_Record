@@ -5,7 +5,7 @@ import {
   Directive,
   DirectiveBinding,
 } from "vue";
-import ContextmenuComponent from "./Contextmenu.vue";
+import ContextmenuComponent from "./ContextMenu.vue";
 import { IClickMenuItem } from "./index.d";
 
 const __ctxmenu__ = "__ctxmenu__";
@@ -77,6 +77,7 @@ const contextmenuListener = ({
   const app = createApp(ContextmenuComponent, {
     axis: { x: event.x, y: event.y },
     el,
+    event,
     menus,
     isDark,
     removeContextMenu,
@@ -118,7 +119,7 @@ export const directives = {
 export default {
   install(app: App) {
     // 注册具名组件
-    // app.component("contextmenu", ContextmenuComponent);
+    // app.component("ContextmenuComponent", ContextmenuComponent);
     // 注册全局指令
     app.directive("contextmenu", ContextmenuDirective);
   },

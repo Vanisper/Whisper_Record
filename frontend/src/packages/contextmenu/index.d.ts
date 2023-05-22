@@ -10,6 +10,7 @@ export interface IClickMenuItem {
 
 export type ClickMenuItemAction = (
   el: HTMLElement,
+  event: MouseEvent,
   axis: { x: number; y: number },
   menus: IClickMenuItem[],
   isDark: boolean

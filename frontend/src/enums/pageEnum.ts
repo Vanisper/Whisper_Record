@@ -37,6 +37,10 @@ export enum PageEnum {
   BASE_EDITOR = "/editor",
   BASE_EDITOR_NAME = "Editor",
 
+  // 设置
+  BASE_SETTING = "/setting",
+  BASE_SETTING_NAME = "Setting",
+
   // 我的项目
   BASE_HOME_ITEMS = "/home/items",
   BASE_HOME_ITEMS_NAME = "Home-Items",
