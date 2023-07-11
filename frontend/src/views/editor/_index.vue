@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch } from "vue";
-import { IClickMenuItem } from "../../packages/contextmenu/index.d";
+import { IClickMenuItem } from "web-contextmenu/type/ContextMenuType";
 import { useDesignStore } from "../../store/modules/designStore/designStore";
 import Editor from "./editor.vue";
 import { WhisperMarkDown } from "./lib";
@@ -100,15 +100,18 @@ watch(
   right: 0;
   height: 100%;
   background-color: inherit;
+
   &::-webkit-scrollbar {
     width: 12px;
     height: 8px;
     background-color: rgba(0, 0, 0, 0);
     position: absolute;
   }
+
   &::-webkit-scrollbar-corner {
     background: 0 0;
   }
+
   &::-webkit-scrollbar-thumb {
     background: var(--scrollbar-color);
     // background-clip: padding-box;
@@ -130,5 +133,4 @@ watch(
     padding-bottom: 70px;
     // transition: 0.4s padding-top ease-out;
   }
-}
-</style>
+}</style>

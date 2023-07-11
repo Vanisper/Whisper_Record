@@ -22,7 +22,6 @@ import { minimizePath, maximizePath, closePath, restorePath } from "../../assets
 import { CloseWindow, MaximiseWindow, OnTopWindow, WindowIsOnToped } from "../../../wailsjs/go/backend/App";
 import { ref } from "vue";
 import { WindowIsMaximised, WindowMinimise } from "../../../wailsjs/runtime";
-
 import onTop from "./items/onTop.vue";
 
 async function closeWindow() {
@@ -35,9 +34,8 @@ async function maximiseWindow() {
   isMaximised.value = !isMaximised.value
 }
 
-
-let isMaximised = ref(await WindowIsMaximised())
-let isOntoped = ref(await WindowIsOnToped())
+const isMaximised = ref(await WindowIsMaximised())
+const isOntoped = ref(await WindowIsOnToped())
 
 window.onresize = async (event) => {
   isMaximised.value = await WindowIsMaximised()

@@ -97,6 +97,9 @@ dependencies:
   vue3-lazyload:
     specifier: ^0.3.6
     version: 0.3.6(vue@3.2.37)
+  web-contextmenu:
+    specifier: ^1.0.1
+    version: r.cnpmjs.org/web-contextmenu@1.0.1
   webfontloader:
     specifier: ^1.6.28
     version: 1.6.28
@@ -2198,4 +2201,10 @@ packages:
       lru-cache: 5.1.1
       mapped-disposable: 1.0.3
       micromatch: 4.0.5
+    dev: false
+
+  r.cnpmjs.org/web-contextmenu@1.0.1:
+    resolution: {integrity: sha512-8C8p8DIeN8uMXBXUWpr0ntpee57txzvlG6I7n/eh7Y0t8LbHdF7lHeauXC3hdKbjqfmRsUcUO0UGXSjRF/OwZQ==, registry: https://registry.npmmirror.com/, tarball: https://r.cnpmjs.org/web-contextmenu/-/web-contextmenu-1.0.1.tgz}
+    name: web-contextmenu
+    version: 1.0.1
     dev: false

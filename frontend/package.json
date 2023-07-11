@@ -41,6 +41,7 @@
     "vue-codemirror": "^6.1.1",
     "vue-router": "^4.1.6",
     "vue3-lazyload": "^0.3.6",
+    "web-contextmenu": "^1.0.1",
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {

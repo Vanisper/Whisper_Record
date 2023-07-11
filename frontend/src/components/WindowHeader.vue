@@ -7,7 +7,6 @@
       <div class="header-center">
         <slot name="extend-center" />
       </div>
-
       <div class="header-right" style="--wails-draggable: none">
         <slot name="extend-right" />
         <window-controls />

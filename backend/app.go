@@ -3,6 +3,7 @@ package backend
 import (
 	"Whisper_Record/backend/config"
 	"Whisper_Record/backend/internal"
+	"Whisper_Record/backend/internal/systray"
 	"Whisper_Record/backend/server"
 	"Whisper_Record/util"
 	"Whisper_Record/util/file"
@@ -38,6 +39,7 @@ type App struct {
 	DBFile        string
 	onTop         bool
 	isMaximised   bool
+	isHide        bool
 	//hide 是否启用关闭至托盘的模式
 	hide bool
 }
@@ -47,11 +49,29 @@ func NewApp() *App {
 	return &App{}
 }
 
+func (a *App) showWindow() {
+	runtime.WindowShow(a.ctx)
+	a.isHide = false
+}
+
+func (a *App) hiddenWindow() {
+	runtime.WindowHide(a.ctx)
+	a.isHide = true
+}
+
+func (a *App) toggleWindow() {
+	if a.isHide {
+		a.showWindow()
+		return
+	}
+	a.hiddenWindow()
+}
+
 // OnStartup 应用启动
 func (a *App) OnStartup(ctx context.Context) {
 	//透明背景会存在最大化无法点击顶部状态栏的问题
-	//hwnd := win.FindWindow(nil, syscall.StringToUTF16Ptr("微记"))
-	//win.SetWindowLong(hwnd, win.GWL_EXSTYLE, win.GetWindowLong(hwnd, win.GWL_EXSTYLE)|win.WS_EX_LAYERED)
+	// hwnd := win.FindWindow(nil, syscall.StringToUTF16Ptr("微记"))
+	// win.SetWindowLong(hwnd, win.GWL_EXSTYLE, win.GetWindowLong(hwnd, win.GWL_EXSTYLE)|win.WS_EX_LAYERED)
 	// 初始化
 	a.init = NewAppInit()
 	a.init.Init()
@@ -77,34 +97,41 @@ func (a *App) OnStartup(ctx context.Context) {
 		runtime.WindowMaximise(a.ctx)
 	}
 	a.hide = config.Hide
+	a.isHide = config.Hide
+	if a.isHide {
+		a.hiddenWindow()
+	}
 
 	cfgPath := util.GetCfgPath()
-	////创建系统托盘
-	//trayOptions := options.SystemTray{
-	//	LightModeIcon: nil,
-	//	DarkModeIcon:  nil,
-	//	Title:         "微记",
-	//	Tooltip:       "微记",
-	//	StartHidden:   false,
-	//	Menu:          nil,
-	//	OnLeftClick: func() {
-	//		runtime.Show(a.ctx)
-	//	},
-	//	OnRightClick:       nil,
-	//	OnLeftDoubleClick:  nil,
-	//	OnRightDoubleClick: nil,
-	//	OnMenuClose:        nil,
-	//	OnMenuOpen:         nil,
-	//}
-	//tray := wails.Application.NewSystemTray(&trayOptions)
-	////托盘图标
-	//tray.SetIcons(&options.SystemTrayIcon{Data: config.AppIcon}, &options.SystemTrayIcon{Data: config.AppIcon})
-	////托盘菜单
-	//tray.SetMenu(a.Menu())
-	//err := tray.Run()
-	//if err != nil {
-	//	return
-	//}
+
+	// 托盘
+	sysTray := systray.NewSysTray("微记", config.AppIconICO, func() {
+		a.toggleWindow()
+		if a.isHide {
+			systray.ChangeIcon(config.AppIconICOFF)
+			return
+		}
+		systray.ChangeIcon(config.AppIconICO)
+	}, func() {
+		mCheck := systray.AddMenuItemCheckbox("切换", "切换", false)
+		iconPlayer := systray.NewIconPlayer("icons", config.AppIcons)
+		mCheck.Click(func() {
+			if !mCheck.Checked() {
+				mCheck.Check()
+				iconPlayer.Play(50)
+			} else {
+				mCheck.Uncheck()
+				iconPlayer.Stop()
+			}
+		})
+		systray.AddSeparator()
+		mQuit := systray.AddMenuItem("退出", "退出程序")
+		mQuit.SetIcon(config.AppIconICO)
+		mQuit.Click(func() {
+			systray.Quit()
+		})
+	}, func() { a.CloseWindow(false) })
+	sysTray.Run()
 
 	//-----------------
 	// Git
@@ -411,7 +438,7 @@ func (a *App) OnBeforeClose(ctx context.Context) bool {
 	a.Log.Info("OnBeforeClose")
 
 	if a.hide {
-		runtime.Hide(a.ctx)
+		a.hiddenWindow()
 	} else {
 		a.KillPreview()
 	}

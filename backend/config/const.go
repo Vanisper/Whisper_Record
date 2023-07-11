@@ -1,11 +1,23 @@
 package config
 
 import (
-	_ "embed"
+	"embed"
 )
 
 //go:embed icon.png
 var AppIcon []byte
+
+//go:embed icon.ico
+var AppIconICO []byte
+
+//go:embed ff.ico
+var AppIconICOFF []byte
+
+//go:embed test.ico
+var AppIconICOTest []byte
+
+//go:embed all:icons
+var AppIcons embed.FS
 
 // 应用
 const (

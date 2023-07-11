@@ -72,7 +72,7 @@ import { DocumentsOutline as DocumentsIcon, SettingsOutline as SettingIcon, } fr
 import { DocumentOnePage20Regular as ArticleIcon, CubeLink20Regular as LinkToIcon } from "@vicons/fluent";
 import { useRouter, useRoute } from "vue-router";
 import { onMounted, ref, watch, reactive, computed } from "vue";
-import { IClickMenuItem } from "../packages/contextmenu/index.d";
+import { IClickMenuItem } from "web-contextmenu/type/ContextMenuType";
 import { usePostsStore } from "../store/modules/postsStore/postsStore";
 
 const projectTree = computed(() => usePostsStore().projectTree!)
@@ -81,7 +81,7 @@ const contextmenus = ref<IClickMenuItem[]>([
   {
     text: "新建文件",
     // subText: "CREATE_FILE",
-    action: async (el, event, axis, menus, isDark) => {
+    action: async (el, event, axis, menus, item, isDark) => {
       const target = event.target as HTMLElement;
       const regex = /\.md$/;
 
@@ -135,7 +135,7 @@ const contextmenus = ref<IClickMenuItem[]>([
   {
     text: "新建文件夹",
     // subText: "CREATE_FOLDER",
-    action: async (el, event, axis, menus, isDark) => {
+    action: async (el, event, axis, menus, item, isDark) => {
       const target = event.target as HTMLElement;
 
       if (target.dataset.filepath && target.dataset.filepath !== "") {
@@ -202,7 +202,7 @@ const contextmenus = ref<IClickMenuItem[]>([
   {
     text: "删除",
     // subText: "CTRL + X",
-    action: async (el, event, axis, menus, isDark) => {
+    action: async (el, event, axis, menus, item, isDark) => {
       if (!confirm("你确定要删除这个文件（夹）吗？")) {
         window.$message.info("取消删除")
         return false

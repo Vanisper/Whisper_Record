@@ -10,7 +10,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { IClickMenuItem } from '../../packages/contextmenu/index.d';
+import { IClickMenuItem } from "web-contextmenu/type/ContextMenuType";
 import { useDesignStore } from '../../store/modules/designStore/designStore';
 
 const msg = ref("")

@@ -2,7 +2,7 @@ import { App } from "vue";
 import VueLazyLoad from "vue3-lazyload";
 import { requireErrorImg } from "../utils";
 
-import Contextmenu from "../packages/contextmenu";
+import Contextmenu from "web-contextmenu";
 
 // import { x } from '@/directives';
 
