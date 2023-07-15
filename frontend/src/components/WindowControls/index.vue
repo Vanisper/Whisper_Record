@@ -2,23 +2,23 @@
   <onTop />
   <div title="最小化" class="frameless-titlebar-button frameless-titlebar-minimize" @click="WindowMinimise">
     <svg width="10" height="10">
-      <path :d="minimizePath" />
+      <path v-for="(d, index) in minimizePath" :d="d" />
     </svg>
   </div>
   <div title="最大化" class="frameless-titlebar-button frameless-titlebar-toggle" @click="maximiseWindow">
     <svg width="10" height="10">
-      <path :d="isMaximised ? restorePath : maximizePath" />
+      <path v-for="(d, index) in (isMaximised ? restorePath_win11 : maximizePath_win11)" :d="d" />
     </svg>
   </div>
   <div title="关闭" class="frameless-titlebar-button frameless-titlebar-close" @click="closeWindow">
     <svg width="10" height="10">
-      <path :d="closePath" />
+      <path v-for="(d, index) in closePath" :d="d" />
     </svg>
   </div>
 </template>
 
 <script setup lang="ts">
-import { minimizePath, maximizePath, closePath, restorePath } from "../../assets/window-controls";
+import { minimizePath, maximizePath, closePath, restorePath, restorePath_win11, maximizePath_win11 } from "../../assets/window-controls";
 import { CloseWindow, MaximiseWindow, OnTopWindow, WindowIsOnToped } from "../../../wailsjs/go/backend/App";
 import { ref } from "vue";
 import { WindowIsMaximised, WindowMinimise } from "../../../wailsjs/runtime";
